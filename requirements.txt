@@ -7,8 +7,11 @@ langchain
 langchain-huggingface
 huggingface_hub
 transformers
-torch==2.2.2+cpu
+torch
 pillow
 requests
 python-dotenv
 cloudinary
+google-auth
+google-auth-oauthlib
+google-api-python-client
