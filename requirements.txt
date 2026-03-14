@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+langgraph
+langchain
+langchain-huggingface
+huggingface_hub
+transformers
+torch
+pillow
+requests
+python-dotenv
+cloudinary
