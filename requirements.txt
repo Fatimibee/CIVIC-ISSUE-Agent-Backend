@@ -1,3 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
 fastapi
 uvicorn
 python-multipart
@@ -6,7 +7,7 @@ langchain
 langchain-huggingface
 huggingface_hub
 transformers
-torch
+torch==2.2.2+cpu
 pillow
 requests
 python-dotenv

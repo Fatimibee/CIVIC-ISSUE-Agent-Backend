@@ -32,6 +32,13 @@ class HumanAction(BaseModel):
     approval: bool
     suggestion: str | None = None
 
+@app.get("/")
+async def root():
+    return {"message": "Civic Issue AI Agent running"}
+
+@app.get("/health")
+async def home():
+    return {"status": "OK"}
 
 @app.post("/start_issue")
 async def start_issue(
