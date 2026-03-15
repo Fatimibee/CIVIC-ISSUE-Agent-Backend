@@ -32,6 +32,11 @@ if creds:
     with open("credentials.json", "wb") as f:
         f.write(base64.b64decode(creds))
 
+token = os.getenv("GOOGLE_TOKEN_BASE64")
+
+if token:
+    with open("token.json", "wb") as f:
+        f.write(base64.b64decode(token))
 # Pydantic Model
 
 class HumanAction(BaseModel):
