@@ -38,13 +38,18 @@ processor   = None
 
 def load_clip():
     global clip_model, clip_processor
-    
+
     if clip_model is None:
-        clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        clip_model = CLIPModel.from_pretrained(
+            "openai/clip-vit-base-patch32",
+            low_cpu_mem_usage=True
+        )
+
+        clip_processor = CLIPProcessor.from_pretrained(
+            "openai/clip-vit-base-patch32"
+        )
 
     return clip_model, clip_processor
-
 # HuggingFace LLM
 
 _endpoint = HuggingFaceEndpoint(
@@ -59,26 +64,33 @@ llm = ChatHuggingFace(llm=_endpoint)
 # NODE : IMAGE CLASSIFY
 
 def IssueClassify(state: AgentState):
+
     clip_model, clip_processor = load_clip()
 
     image_base64 = state["issueimage"]
-    image_data   = image_base64.split(",")[1]
-    image_bytes  = base64.b64decode(image_data)
-    image        = Image.open(io.BytesIO(image_bytes))
-    
-    inputs  = clip_processor(text=CIVIC_LABELS, images=image, return_tensors="pt", padding=True)
-    outputs = clip_model(**inputs)
-    probs   = outputs.logits_per_image.softmax(dim=1)
+    image_data = image_base64.split(",")[1]
+    image_bytes = base64.b64decode(image_data)
+
+    image = Image.open(io.BytesIO(image_bytes))
+
+    inputs = clip_processor(
+        text=CIVIC_LABELS,
+        images=image,
+        return_tensors="pt",
+        padding=True
+    )
+
+    with torch.no_grad():
+        outputs = clip_model(**inputs)
+
+    probs = outputs.logits_per_image.softmax(dim=1)
+
     score, idx = torch.max(probs, dim=1)
 
     issue = CIVIC_LABELS[idx.item()]
-    score = float(score.detach().item())
+    score = float(score.item())
 
-    print("Issue detected:", issue)
-    print("Confidence:", score)
-
-    return {"issueClass": issue, "issueScore": score}   
-
+    return {"issueClass": issue, "issueScore": score}
 
 # NODE : IMAGE QUALITY
 
