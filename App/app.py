@@ -5,6 +5,8 @@ from pydantic import BaseModel
 import base64
 import uuid
 
+import os
+import base64
 from Agent.Graph import CivicIssueAgent
 from langgraph.types import Command
 
@@ -24,6 +26,11 @@ graph = CivicIssueAgent()
 sessions = {}
 
 
+creds = os.getenv("GOOGLE_CREDS_BASE64")
+
+if creds:
+    with open("credentials.json", "wb") as f:
+        f.write(base64.b64decode(creds))
 
 # Pydantic Model
 
